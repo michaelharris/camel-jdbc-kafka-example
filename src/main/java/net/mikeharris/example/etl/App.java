@@ -12,7 +12,7 @@ public class App {
 	 
 	  private void run() {
 	 
-		String[] springConfig = { "camel-context.xml" };
+		String[] springConfig = { "camel-context.xml" , "broker.xml"};
 	 
 		ApplicationContext context = new ClassPathXmlApplicationContext(springConfig);
 	 
