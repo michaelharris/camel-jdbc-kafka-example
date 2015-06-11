@@ -25,7 +25,9 @@ def activemqVersion = "5.11.1"
           compile group: 'org.apache.camel', version: camelVersion, name: 'camel-cxf' 
           compile group: 'org.apache.camel', version: camelVersion, name: 'camel-jms' 
           compile group: 'org.apache.camel', version: camelVersion, name: 'camel-jdbc' 
+          compile group: 'org.apache.camel', version: camelVersion, name: 'camel-elasticsearch'
           
+          //For testing
           compile 'org.apache.derby:derby:10.11.1.1' 
           
           
@@ -43,7 +45,7 @@ def activemqVersion = "5.11.1"
           compile 'org.apache.xbean:xbean-spring:4.3' 
           
           
-         compile 'commons-dbcp:commons-dbcp:2.1' 
+        compile 'commons-dbcp:commons-dbcp:2.1' 
         compile 'ch.qos.logback:logback-classic:1.1.2' 
         compile 'org.springframework:spring-core:4.1.4.RELEASE' 
         compile 'org.springframework:spring-jdbc:4.1.4.RELEASE' 
