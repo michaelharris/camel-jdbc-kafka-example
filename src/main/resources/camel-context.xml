@@ -27,9 +27,13 @@
       </map>
     </property>
   </bean>
+  
   <bean id="recordProcessor" class="net.mikeharris.example.etl.RecordProcessor">
   </bean>
-
+  
+  	<!-- The preparation of the message before it is sent to ElasticSearch -->
+   <bean id="mapRecordXContentProcessor" class="net.mikeharris.example.etl.MapRecordXContentProcessor" />
+  
   <!--
   Camel route setup
   -->
@@ -46,11 +50,11 @@
         </constant>
       </setBody>
       <to uri="jdbc:dataSource"/>
-<!--       <split> -->
-<!--         <simple>${body}</simple> -->
-<!--         <to uri="bean:recordProcessor"/> -->
+      <split>
+        <simple>${body}</simple>
+      <to uri="bean:recordProcessor"/> 
         <to uri="activemq:queue:inbox"/>
-<!--       </split> -->
+      </split>
     </route>
     
         <!--  
@@ -86,28 +90,25 @@
       
   <camelContext xmlns="http://camel.apache.org/schema/spring"> 
       
-        <!-- 
-      <route> 
-          <from uri="timer:foo?period=1s"/> 
-          <transform> 
-              <simple>Message at ${date:now:yyyy-MM-dd HH:mm:ss}</simple> 
-          </transform> 
-          <to uri="activemq:queue:inbox"/> 
-      </route> 
-    	-->
+       
     	
       <!-- Camel route to move messages from the ActiveMQ inbox to its outbox queue --> 
       <route> 
           <from uri="activemq:queue:inbox"/> 
           <log message="Routing message from inbox to outbox queue with data ${body}"/> 
-          <to uri="activemq:queue:outbox"/> 
+          <to uri="bean:mapRecordXContentProcessor"/> 
+           <to uri="direct:xcontent"/> 
+
       </route> 
       
     <route>
     
-    <from uri="activemq:queue:outbox" />
+    <from uri="direct:xcontent" />
     <log message="Routing  TO ES data ${body}"/> 
+    <split>
+        <simple>${body}</simple>
     	<to uri="elasticsearch://elasticsearch?operation=INDEX&amp;indexName=cameltest&amp;indexType=entmap"/>
+    	</split>
 	</route>
   
   </camelContext> 
